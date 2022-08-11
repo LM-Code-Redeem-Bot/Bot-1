@@ -42,9 +42,6 @@ s_code=set()
 #         print(e)
 #     # print("Task End Time :- ",strftime("%Y-%m-%d %H:%M:%S", localtime()))
 
-
-from playwright.sync_api import sync_playwright
-
 async def run(url_code,url_id):
     browser = await launch({'headless': False},
         handleSIGINT=False,
