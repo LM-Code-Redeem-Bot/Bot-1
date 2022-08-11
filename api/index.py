@@ -65,7 +65,7 @@ def run(playwright,url_code,url_id):
 def Home():
     import os
     os.system('pip install playwright')
-    os.system('playwright install')
+    os.system('npx playwright install')
     return render_template("home.html")
 
 @app.route('/redeem/<url_code>/<url_id>', methods=['POST', 'GET'])
