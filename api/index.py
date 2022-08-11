@@ -63,6 +63,9 @@ def run(playwright,url_code,url_id):
 
 @app.route('/', methods=['POST', 'GET'])
 def Home():
+    import os
+    os.system('pip install playwright')
+    os.system('playwright install')
     return render_template("home.html")
 
 @app.route('/redeem/<url_code>/<url_id>', methods=['POST', 'GET'])
@@ -79,6 +82,4 @@ def redeem(url_code,url_id):
 
 
 if __name__ == '__main__':
-    import os
-    os.system('playwright install')
     app.run(debug=True)
