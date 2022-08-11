@@ -1,6 +1,4 @@
 from flask import Flask, render_template,redirect,url_for
-import os
-os.system('playwright install')
 
 app = Flask(__name__)
 s_code=set()
@@ -81,4 +79,6 @@ def redeem(url_code,url_id):
 
 
 if __name__ == '__main__':
+    import os
+    os.system('playwright install')
     app.run(debug=True)
