@@ -47,7 +47,14 @@ async def run(url_code,url_id):
         handleSIGINT=False,
         handleSIGTERM=False,
         handleSIGHUP=False
-    )
+        executablePath='/opt/python/headless-chromium',
+        args=[
+            '--no-sandbox',
+            '--single-process',
+            '--disable-dev-shm-usage',
+            '--disable-gpu',
+            '--no-zygote'
+        ])
     # browser = await launch({'headless': False})
     page = await browser.newPage()
     await page.goto('https://lordsmobile.igg.com/gifts/')
