@@ -47,7 +47,6 @@ async def run(url_code,url_id):
         handleSIGINT=False,
         handleSIGTERM=False,
         handleSIGHUP=False
-        executablePath='/opt/python/headless-chromium',
         args=[
             '--no-sandbox',
             '--single-process',
