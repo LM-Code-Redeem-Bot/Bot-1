@@ -1,4 +1,6 @@
 from flask import Flask, render_template,redirect,url_for
+import asyncio
+from pyppeteer import launch
 
 app = Flask(__name__)
 s_code=set()
@@ -43,29 +45,26 @@ s_code=set()
 
 from playwright.sync_api import sync_playwright
 
-def run(playwright,url_code,url_id):
-    chromium = playwright.chromium
-    browser = chromium.launch()
-    page = browser.new_page()
-    # page.screenshot(path="ss/initial.png", full_page=True)
-    page.goto("https://lordsmobile.igg.com/gifts/")
-    # page.screenshot(path="ss/screenshot.png", full_page=True)
-    page.locator('#iggid').fill(url_id)
-    # page.screenshot(path="ss/screenshot1.png", full_page=True)
-    page.locator('#cdkey_1').fill(url_code)
-    # page.screenshot(path="ss/screenshot2.png", full_page=True)
-    page.locator('#btn_claim_1').click()
-    # page.screenshot(path="ss/screenshot3.png", full_page=True)
-    page.locator('#btn_msg_close').click()
-    # page.screenshot(path="ss/screenshot4.png", full_page=True)
+async def run(url_code,url_id):
+    browser = await launch({'headless': False},
+        handleSIGINT=False,
+        handleSIGTERM=False,
+        handleSIGHUP=False
+    )
+    # browser = await launch({'headless': False})
+    page = await browser.newPage()
+    await page.goto('https://lordsmobile.igg.com/gifts/')
+    await page.focus('#iggid')
+    await page.keyboard.type(url_id)
+    await page.focus('#cdkey_1')
+    await page.keyboard.type(url_code)
+    await page.click('[id="btn_claim_1"]');
+    await page.click('[id="btn_msg_close"]');
     print("Code Redeemed...!!!")
-    browser.close()
+    await browser.close()
 
 @app.route('/', methods=['POST', 'GET'])
 def Home():
-    import os
-    os.system('pip install playwright')
-    os.system('npx playwright install')
     return render_template("home.html")
 
 @app.route('/redeem/<url_code>/<url_id>', methods=['POST', 'GET'])
@@ -74,12 +73,32 @@ def redeem(url_code,url_id):
     # print("The Redeem Code :-", url_code)
     # print("The Redeem ID :-", url_id)
     if str(url_code) in list(s_code):
-        return render_template("home.html")
-    with sync_playwright() as playwright:
-        run(playwright,url_code,url_id)
+        return redirect(url_for('Home'))
+    asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    asyncio.get_event_loop().run_until_complete(run(url_code,url_id))
     s_code.add(str(url_code))
     return redirect(url_for('Home'))
 
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+# import asyncio
+# from pyppeteer import launch
+
+# async def main():
+#     browser = await launch({'headless': True})
+#     page = await browser.newPage()
+#     await page.goto('https://lordsmobile.igg.com/gifts/')
+#     await page.focus('#iggid')
+#     await page.keyboard.type('1234')
+#     await page.focus('#cdkey_1')
+#     await page.keyboard.type('atharv')
+#     await page.click('[id="btn_claim_1"]');
+#     await page.click('[id="btn_msg_close"]');
+#     print("Code Redeemed...!!!")
+#     await browser.close()
+
+# asyncio.get_event_loop().run_until_complete(main())
