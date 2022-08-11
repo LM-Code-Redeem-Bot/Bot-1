@@ -71,7 +71,6 @@ def redeem(url_code,url_id):
     # print("The Redeem ID :-", url_id)
     if str(url_code) in list(s_code):
         return redirect(url_for('Home'))
-    asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     asyncio.get_event_loop().run_until_complete(run(url_code,url_id))
