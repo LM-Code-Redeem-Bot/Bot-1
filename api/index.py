@@ -46,7 +46,7 @@ async def run(url_code,url_id):
     browser = await launch({'headless': False},
         handleSIGINT=False,
         handleSIGTERM=False,
-        handleSIGHUP=False
+        handleSIGHUP=False,
         args=[
             '--no-sandbox',
             '--single-process',
